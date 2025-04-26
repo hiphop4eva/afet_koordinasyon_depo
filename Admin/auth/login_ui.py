@@ -7,72 +7,7 @@ from styles.styles_dark import LOGIN_DARK_STYLES
 from styles.styles_light import LOGIN_LIGHT_STYLES
 from utils import get_icon_path
 
-class LoginCard(QFrame):
-    def __init__(self, title, icon_path, main_window=None, parent=None):
-        super().__init__(parent)
-        self.main_window = main_window
-        self.setFixedSize(550, 200)
-        self.setCursor(QCursor(Qt.PointingHandCursor))
-        self.setObjectName("loginCard")
 
-        
-        # Use grid layout for better alignment control
-        layout = QGridLayout()
-        layout.setContentsMargins(25, 25, 25, 25)
-        layout.setSpacing(20)
-        
-        # Icon Container - centered in left half
-        icon_container = QFrame()
-        icon_container.setFixedSize(120, 120)  # Make slightly larger
-        icon_container.setStyleSheet("""
-            background-color: rgba(30, 0, 0, 0.1);
-            border-radius: 20px;
-        """)
-        
-        icon_layout = QVBoxLayout(icon_container)
-        icon_layout.setContentsMargins(10, 10, 10, 10)
-        icon_layout.setAlignment(Qt.AlignCenter)  # Center the icon in container
-        
-        # Icon - larger and centered
-        icon_label = QLabel()
-        icon_label.setFixedSize(90, 90)  # Make icon larger
-        icon_label.setScaledContents(True)
-        icon_label.setAlignment(Qt.AlignCenter)  # Center the icon
-        icon_pixmap = QPixmap(get_icon_path(icon_path))
-        if not icon_pixmap.isNull():
-            icon_label.setPixmap(icon_pixmap)
-        
-        icon_layout.addWidget(icon_label)
-        
-        # Text Container
-        text_container = QFrame()
-        text_layout = QVBoxLayout(text_container)
-        text_layout.setAlignment(Qt.AlignVCenter)  # Vertically center
-        text_layout.setSpacing(15)  # Increased spacing
-        
-        title_label = QLabel(title)
-        title_label.setFont(QFont('Segoe UI', 18, QFont.Bold))
-        title_label.setAlignment(Qt.AlignLeft)
-        title_label.setStyleSheet("color: #ffffff;")
-        
-        subtitle_label = QLabel("Giriş yapmak için tıklayın")
-        subtitle_label.setFont(QFont('Segoe UI', 11))
-        subtitle_label.setStyleSheet("color: #7f8c8d;")
-        
-        text_layout.addWidget(title_label)
-        text_layout.addWidget(subtitle_label)
-        
-        # Add to grid layout
-        layout.addWidget(icon_container, 0, 0, Qt.AlignCenter)
-        layout.addWidget(text_container, 0, 1, Qt.AlignVCenter)
-        
-        self.setLayout(layout)
-        
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton and self.main_window:
-            self.main_window.show_login_form(self.objectName())
-
-            
 class StyledLineEdit(QLineEdit):
     def __init__(self, placeholder="", parent=None):
         super().__init__(parent)
@@ -122,8 +57,8 @@ class StyledToggle(QCheckBox):
         super().mouseReleaseEvent(event)
         self.toggle()
         
-        start_value = 0 if not self.isChecked() else 1
-        end_value = 1 if not self.isChecked() else 0
+        start_value = 1 if not self.isChecked() else 0
+        end_value = 0 if not self.isChecked() else 1
         
         self._animation.setStartValue(start_value)
         self._animation.setEndValue(end_value)
@@ -190,47 +125,6 @@ class LoginUI(QWidget):
         logo_container.setLayout(logo_layout)
         main_layout.addWidget(logo_container)
         
-        # Stacked Widget for switching between cards and login form
-        self.stacked_widget = QStackedWidget()
-        
-        # Cards Page
-        cards_page = QWidget()
-        cards_layout = QVBoxLayout()
-        
-        # Login Cards Container Frame
-        login_cards_frame = QFrame()
-        login_cards_frame.setObjectName("loginCardsFrame")
-        login_cards_frame.setStyleSheet("""
-            #loginCardsFrame {
-                background-color: #13111b;
-                border-radius: 25px;
-                padding: 20px;
-                margin: 20px;
-            }
-        """)
-        
-        # Login Cards Layout
-        login_cards = QHBoxLayout(login_cards_frame)
-        login_cards.setSpacing(30)  # Kartlar arası boşluk arttı
-        login_cards.setContentsMargins(30, 30, 30, 30)  # Kenar boşlukları arttı
-        login_cards.setAlignment(Qt.AlignCenter)
-        
-        # Create cards
-        self.personel_card = LoginCard("Personel Girişi", "afad.png", main_window=self)
-        self.personel_card.setObjectName("personel")
-        self.admin_card = LoginCard("Yönetim Girişi", "bakanlik.png", main_window=self)
-        self.admin_card.setObjectName("admin")
-        
-        login_cards.addWidget(self.personel_card)
-        login_cards.addWidget(self.admin_card)
-        
-        cards_layout.addWidget(login_cards_frame)
-        
-        # Add NGO section to cards page
-        cards_layout.addWidget(self.create_ngo_section())
-        
-        cards_page.setLayout(cards_layout)
-        
         # Login Form Page
         login_page = QWidget()
         login_layout = QVBoxLayout()
@@ -240,64 +134,21 @@ class LoginUI(QWidget):
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 0, 0, 20)
         
-        # Back button with text
-        back_btn_container = QFrame()
-        back_btn_layout = QHBoxLayout()
-        back_btn_layout.setContentsMargins(0, 0, 0, 0)
-        back_btn_layout.setSpacing(5)
-        
-        back_btn = QPushButton()
-        back_btn.setIcon(QIcon(get_icon_path('back.png')))
-        back_btn.setIconSize(QSize(24, 24))
-        back_btn.setFixedSize(40, 40)
-        back_btn.setCursor(Qt.PointingHandCursor)
-        back_btn.setStyleSheet("""
-            QPushButton {
-                background-color: transparent;
-                border: none;
-                border-radius: 20px;
-            }
-            QPushButton:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-        """)
-        back_btn.clicked.connect(self.show_cards)
-        
-        back_label = QLabel("Geri Dön")
-        back_label.setFont(QFont('Segoe UI', 12))
-        back_label.setCursor(Qt.PointingHandCursor)
-        back_label.setStyleSheet("color: #3498db;")
-        back_label.mousePressEvent = lambda e: self.show_cards()
-        
-        back_btn_container.setStyleSheet("""
-            QFrame {
-                background-color: transparent;
-            }
-            QFrame:hover {
-                background-color: rgba(255, 255, 255, 0.05);
-                border-radius: 20px;
-            }
-        """)
-        
-        back_btn_layout.addWidget(back_btn)
-        back_btn_layout.addWidget(back_label)
-        back_btn_container.setLayout(back_btn_layout)
-        
         # Title Container
         title_container = QFrame()
         title_container.setFixedWidth(400)  # Sabit genişlik
         title_layout = QVBoxLayout(title_container)
         title_layout.setAlignment(Qt.AlignCenter)
         
-        self.login_type_label = QLabel()
-        self.login_type_label.setFont(QFont('Segoe UI', 22, QFont.Bold))  # Biraz daha küçük
-        self.login_type_label.setAlignment(Qt.AlignCenter)
-        title_layout.addWidget(self.login_type_label)
+        self.login_label = QLabel()
+        self.login_label.setFont(QFont('Segoe UI', 22, QFont.Bold))  # Biraz daha küçük
+        self.login_label.setAlignment(Qt.AlignCenter)
+        self.login_label.setText("Giriş")
+        title_layout.addWidget(self.login_label)
         
         # Header layout düzenleme
-        header_layout.addWidget(back_btn_container, 1)  # Stretch factor 1
-        header_layout.addWidget(title_container, 2)     # Stretch factor 2
-        header_layout.addStretch(1)                     # Sağ tarafı dengele
+        header_layout.addWidget(title_container)     
+        header_layout.setAlignment(Qt.AlignCenter)   
         
         header_container.setLayout(header_layout)
         
@@ -353,33 +204,10 @@ class LoginUI(QWidget):
         
         login_page.setLayout(login_layout)
         
-        # Add pages to stacked widget
-        self.stacked_widget.addWidget(cards_page)
-        self.stacked_widget.addWidget(login_page)
+        # Add login page to main layout
+        main_layout.addWidget(login_page)
         
-        main_layout.addWidget(self.stacked_widget)
         self.setLayout(main_layout)
-        
-        # Show cards initially
-        self.show_cards()
-
-    def show_cards(self):
-        """Kart seçim ekranını göster"""
-        self.stacked_widget.setCurrentIndex(0)
-        # Formu temizle
-        self.username_input.clear()
-        self.password_input.clear()
-        
-    def show_login_form(self, login_type):
-        """Giriş formunu göster"""
-        if login_type == "personel":
-            self.login_type_label.setText("Personel Girişi")
-        else:
-            self.login_type_label.setText("Yönetici Girişi")
-        self.stacked_widget.setCurrentIndex(1)
-        self.username_input.clear()
-        self.password_input.clear()
-        self.username_input.setFocus()
 
     def create_ngo_section(self):
         """STK bölümünü oluştur"""

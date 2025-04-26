@@ -86,6 +86,7 @@ class AfetYonetimAdmin(QMainWindow):
         self.left_arrow.setStyleSheet(arrow_style)
         self.left_arrow.clicked.connect(self.scroll_tabs_left)
         self.left_arrow.setEnabled(False)
+        self.left_arrow.hide()
         left_layout.addWidget(self.left_arrow)
         
         # Sağ ok butonu ve mesaj butonu için corner widget
@@ -100,6 +101,7 @@ class AfetYonetimAdmin(QMainWindow):
         self.right_arrow.setFixedSize(QSize(28, 28))
         self.right_arrow.setStyleSheet(arrow_style)
         self.right_arrow.clicked.connect(self.scroll_tabs_right)
+        self.right_arrow.hide()
         
         # Mesaj butonu
         message_btn = QToolButton()
@@ -140,10 +142,10 @@ class AfetYonetimAdmin(QMainWindow):
         self.tabs.clear()
         
         # Görünür sekmeleri ekle
-        start_idx = self.current_tab_index
-        end_idx = min(start_idx + self.tabs_per_page, len(self.all_tabs))
+        start_index = self.current_tab_index
+        end_index = min(start_index + self.tabs_per_page, len(self.all_tabs))
         
-        for i in range(start_idx, end_idx):
+        for i in range(start_index, end_index):
             tab_name, tab_widget = self.all_tabs[i]
             self.tabs.addTab(tab_widget, tab_name)
 
@@ -161,12 +163,20 @@ class AfetYonetimAdmin(QMainWindow):
 
     def update_arrow_states(self):
         # Sol ok durumu
-        self.left_arrow.setEnabled(self.current_tab_index > 0)
+        if self.current_tab_index > self.tabs_per_page:
+            self.left_arrow.show()
+            self.left_arrow.setEnabled(True)
+        else:
+            self.left_arrow.hide()
+            self.left_arrow.setEnabled(False)
         
         # Sağ ok durumu
-        self.right_arrow.setEnabled(
-            self.current_tab_index + self.tabs_per_page < len(self.all_tabs)
-        )
+        if self.current_tab_index + self.tabs_per_page < len(self.all_tabs):
+            self.right_arrow.show()
+            self.right_arrow.setEnabled(True)
+        else:
+            self.right_arrow.hide()
+            self.right_arrow.setEnabled(False)
 
     def closeEvent(self, event):
         """Kapatma butonu (çarpı) tıklanınca uyarı verir."""
