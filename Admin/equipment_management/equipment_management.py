@@ -22,7 +22,7 @@ def get_icon_path(icon_name):
 class EquipmentManagementTab(EquipmentManagementUI):
     """Ekipman Yönetimi Sekmesi"""
     def __init__(self, parent=None):
-        super().__init__()
+        super().__init__(parent)
         self.parent = parent
         
         # Alt modülleri başlat

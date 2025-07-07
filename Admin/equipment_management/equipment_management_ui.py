@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                            QPushButton, QTableWidget, QLineEdit, QComboBox,
                            QFrame, QSpacerItem, QSizePolicy, QHeaderView,
                            QTabWidget, QCalendarWidget, QTreeWidget, QTreeWidgetItem,
-                           QTableWidgetItem, QMessageBox, QDialog, QFormLayout, QDialogButtonBox)
+                           QTableWidgetItem, QMessageBox, QDialog, QFormLayout, QDialogButtonBox, QToolButton, QTabBar)
 from PyQt5.QtCore import Qt, QSize, QDate
 from PyQt5.QtGui import QIcon, QFont
 from styles.styles_dark import *
@@ -15,8 +15,9 @@ def get_icon_path(icon_name):
     return os.path.join(current_dir, 'icons', icon_name)
 
 class EquipmentManagementUI(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.message_manager = parent.message_manager
         self.initUI()
 
     def initUI(self):
@@ -37,6 +38,7 @@ class EquipmentManagementUI(QWidget):
                 color: white;
                 padding: 8px 20px;
                 border: 1px solid #3a3f55;
+                margin-top: 5px;
                 margin-right: 2px;
             }
             QTabBar::tab:selected {
@@ -44,6 +46,28 @@ class EquipmentManagementUI(QWidget):
                 border-bottom: none;
             }
         """)
+
+        # Mesaj butonu için corner widget
+        right_corner = QWidget()
+        right_layout = QHBoxLayout(right_corner)
+        right_layout.setContentsMargins(5, 0, 5, 0)  
+        right_layout.setAlignment(Qt.AlignVCenter)  
+        
+        # Mesaj butonu
+        message_btn = QToolButton()
+        message_btn.setIcon(QIcon(get_icon_path('message.png')))
+        message_btn.setIconSize(QSize(24, 24))
+        message_btn.setFixedSize(QSize(40, 40))
+        message_btn.setToolTip("Mesajlar")
+        message_btn.setStyleSheet("""
+            QToolButton {
+                padding: 0px;
+                margin-bottom: 5px;
+            }
+        """ + MESSAGE_BUTTON_STYLE)
+        message_btn.clicked.connect(self.message_manager.show_message_dialog)
+        
+        right_layout.addWidget(message_btn)
 
         # Ekipman Listesi Tab'ı
         equipment_list_tab = QWidget()
@@ -298,11 +322,13 @@ class EquipmentManagementUI(QWidget):
         # Kaynak Yönetimi
         resource_management_tab = KaynakYonetimTab()
         
-        # Tab'ları ekle
+        # Tab'ları ve kenar widget'ları ekle
         tab_widget.addTab(equipment_list_tab, "Ekipman Listesi")
         tab_widget.addTab(maintenance_tab, "Bakım Takvimi")
         tab_widget.addTab(inventory_tab, "Envanter Dağılımı")
         tab_widget.addTab(resource_management_tab, "Kaynak Yönetimi")
+        
+        tab_widget.setCornerWidget(right_corner, Qt.TopRightCorner)
         
         # Ana layout'a tab widget'ı ekle
         main_layout.addWidget(tab_widget)
