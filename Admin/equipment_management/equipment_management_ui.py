@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt, QSize, QDate
 from PyQt5.QtGui import QIcon, QFont
 from styles.styles_dark import *
 import os
+from resources_management.kaynak_yonetimi import * 
 
 def get_icon_path(icon_name):
     """İkon dosyasının tam yolunu döndürür"""
@@ -293,11 +294,15 @@ class EquipmentManagementUI(QWidget):
         inventory_layout.addLayout(inventory_button_layout)
         inventory_layout.addWidget(self.inventory_table)
         inventory_tab.setLayout(inventory_layout)
+
+        # Kaynak Yönetimi
+        resource_management_tab = KaynakYonetimTab()
         
         # Tab'ları ekle
         tab_widget.addTab(equipment_list_tab, "Ekipman Listesi")
         tab_widget.addTab(maintenance_tab, "Bakım Takvimi")
         tab_widget.addTab(inventory_tab, "Envanter Dağılımı")
+        tab_widget.addTab(resource_management_tab, "Kaynak Yönetimi")
         
         # Ana layout'a tab widget'ı ekle
         main_layout.addWidget(tab_widget)

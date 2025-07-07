@@ -124,8 +124,6 @@ class AfetYonetimAdmin(QMainWindow):
         # Tüm sekmeleri liste olarak tut
         self.all_tabs = [
             ("Ekipman Yönetimi", EquipmentManagementTab()),
-            ("Kaynak Yönetimi", KaynakYonetimTab()),
-            ("Vatandaş Feedback Sistemi", CitizenFeedbackTab()),
         ]
         
         # İlk sayfadaki sekmeleri göster
