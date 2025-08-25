@@ -66,16 +66,6 @@ Proje, sahadaki geri bildirimler doğrultusunda şekillendirilmiş ve gerçek ih
 
 ---
 
-## 📄 Lisans
-
-Bu proje [GNU General Public License v3.0 (GPL-3.0)](https://www.gnu.org/licenses/gpl-3.0.html) kapsamında lisanslanmıştır.
-
-- ✅ Projeyi kullanabilir, dağıtabilir ve değiştirebilirsiniz.  
-- ✅ Türev çalışmalar yapabilirsiniz.  
-- ⚖️ Ancak tüm türev projelerde de **GPL-3.0** lisansı kullanılmalıdır.  
-- ❌ Projeyi kapalı kaynaklı bir sistemde kullanamazsınız.  
-
----
 
 ## 🤝 Geliştiriciler İçin Katkıda Bulunma
 
